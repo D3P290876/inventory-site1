@@ -1,117 +1,6 @@
 // firebase
 import { db } from "./firebase.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-set(ref(db, "inventory"), inventory);
-import { onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-onValue(ref(db,"inventory"), (snapshot)=>{
-   const inventory = snapshot.val() || {};
-    // Render each section as a table with a header
-    function renderSections(sections) {
-      let html = "";
-      for (let i = 0; i < sections.length; i++) {
-        const section = sections[i];
-        html += `<div class="section-header">${section.name}</div>`;
-        html += `<table class="ore-table">
-          <thead>
-            <tr>
-              <th>Ore</th>
-              <th>Inventory</th>
-              <th>Ore per AV</th>
-              <th>Total AV</th>
-              <th>1 AV%</th>
-              <th>2 AV%</th>
-              <th>3 AV%</th>
-            </tr>
-          </thead>
-          <tbody>
-        `;
-        for (const [oreIndex, ore] of section.ores.entries()) {
-          const inputId = `inv-${i}-${oreIndex}`;
-          const avId = `av-${i}-${oreIndex}`;
-          html += `<tr>
-            <td class="ore-name">
-              <img src="./src/${ore.replace(/ /g, "%20")}.png" alt="${ore}" class="ore-img">
-              ${ore}
-            </td>
-            <td><input type="number" min="0" id="${inputId}" data-ore="${ore}" data-av-id="${avId}"></td>
-            <td>${getAV(ore)}</td>
-            <td id="${avId}">0.00</td>
-            <td id="${avId}-percent-1">0.00%</td>
-            <td id="${avId}-percent-2">0.00%</td>
-            <td id="${avId}-percent-3">0.00%</td>
-          </tr>`;
-        }
-        html += `</tbody>
-      <tfoot>
-        <tr>
-          <td colspan="8" class="footer-row">
-            <strong>Total AV:</strong> <span id="footer-av-total-${i}">0.00</span>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="8" class="footer-row">
-            <strong>AV% Completed:</strong> <span id="footer-av-complete-${i}">None | 0% to 1AV% Completion</span>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="8" class="footer-row">
-            <strong>Highest Ore AV:</strong> <span id="footer-highest-${i}">-</span>
-          </td>
-        </tr>
-      </tfoot>
-    </table>`;
-  }
-      return html;
-    }
-
-    console.log(window.oreValues);
-    document.getElementById('ore-sections').innerHTML = renderSections(sections);
-
-    // Event listeners for all inventory inputs
-    document.querySelectorAll('input[type="number"][data-ore]').forEach(input => {
-      input.addEventListener('input', function() {
-        const ore = this.getAttribute('data-ore');
-        const avId = this.getAttribute('data-av-id');
-        const av = window.oreValues && window.oreValues[ore] ? window.oreValues[ore].AV : null;
-        const rawValue = this.value.replace(/\D/g, ''); // digits only
-
-         if (rawValue.length >= 50) {
-          showBigNumberOverlay();
-         }
-
-        const value = parseFloat(this.value);
-
-        let total = 0;
-        if (av && value > 0) {
-          total = value / av;
-        }
-        document.getElementById(avId).textContent = total.toFixed(2);
-
-        // Update AV% columns and set background color
-        [1, 2, 3, 5].forEach(n => {
-          const percentCell = document.getElementById(`${avId}-percent-${n}`);
-          if (percentCell) {
-            const percentValue = getAVPercentValue(value, av, n);
-            percentCell.textContent = percentValue;
-            // Extract numeric percent
-            const percentNum = parseFloat(percentValue);
-            percentCell.style.background = percentToColor(percentNum);
-            percentCell.style.color = percentNum >= 50 || percentNum >= 100 ? "#222" : "#222";
-          }
-        });
-
-        
-        updateFooterTotals();
-        updateStatsTotalAV();
-        updateStatsAboveAV();
-        updateStatsAboveInventory();
-        updateStatsSectionTotals();
-        updateStatsAboveCustomAV();
-      });
-    });
-});
+import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 // Section definitions
     const sections = [
@@ -209,6 +98,110 @@ window.customAVs = [];
       return `rgb(${r},${g},${b})`;
     }
 
+    // Render each section as a table with a header
+    function renderSections(sections) {
+      let html = "";
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        html += `<div class="section-header">${section.name}</div>`;
+        html += `<table class="ore-table">
+          <thead>
+            <tr>
+              <th>Ore</th>
+              <th>Inventory</th>
+              <th>Ore per AV</th>
+              <th>Total AV</th>
+              <th>1 AV%</th>
+              <th>2 AV%</th>
+              <th>3 AV%</th>
+            </tr>
+          </thead>
+          <tbody>
+        `;
+        for (const [oreIndex, ore] of section.ores.entries()) {
+          const inputId = `inv-${i}-${oreIndex}`;
+          const avId = `av-${i}-${oreIndex}`;
+          html += `<tr>
+            <td class="ore-name">
+              <img src="./src/${ore.replace(/ /g, "%20")}.png" alt="${ore}" class="ore-img">
+              ${ore}
+            </td>
+            <td><input type="number" min="0" id="${inputId}" data-ore="${ore}" data-av-id="${avId}"></td>
+            <td>${getAV(ore)}</td>
+            <td id="${avId}">0.00</td>
+            <td id="${avId}-percent-1">0.00%</td>
+            <td id="${avId}-percent-2">0.00%</td>
+            <td id="${avId}-percent-3">0.00%</td>
+          </tr>`;
+        }
+        html += `</tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8" class="footer-row">
+            <strong>Total AV:</strong> <span id="footer-av-total-${i}">0.00</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8" class="footer-row">
+            <strong>AV% Completed:</strong> <span id="footer-av-complete-${i}">None | 0% to 1AV% Completion</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8" class="footer-row">
+            <strong>Highest Ore AV:</strong> <span id="footer-highest-${i}">-</span>
+          </td>
+        </tr>
+      </tfoot>
+    </table>`;
+  }
+      return html;
+    }
+
+    console.log(window.oreValues);
+    document.getElementById('ore-sections').innerHTML = renderSections(sections);
+
+    // Event listeners for all inventory inputs
+    document.querySelectorAll('input[type="number"][data-ore]').forEach(input => {
+      input.addEventListener('input', function() {
+        const ore = this.getAttribute('data-ore');
+        const avId = this.getAttribute('data-av-id');
+        const av = window.oreValues && window.oreValues[ore] ? window.oreValues[ore].AV : null;
+        const rawValue = this.value.replace(/\D/g, ''); // digits only
+
+         if (rawValue.length >= 50) {
+          showBigNumberOverlay();
+         }
+
+        const value = parseFloat(this.value);
+
+        let total = 0;
+        if (av && value > 0) {
+          total = value / av;
+        }
+        document.getElementById(avId).textContent = total.toFixed(2);
+
+        // Update AV% columns and set background color
+        [1, 2, 3, 5].forEach(n => {
+          const percentCell = document.getElementById(`${avId}-percent-${n}`);
+          if (percentCell) {
+            const percentValue = getAVPercentValue(value, av, n);
+            percentCell.textContent = percentValue;
+            // Extract numeric percent
+            const percentNum = parseFloat(percentValue);
+            percentCell.style.background = percentToColor(percentNum);
+            percentCell.style.color = percentNum >= 50 || percentNum >= 100 ? "#222" : "#222";
+          }
+        });
+
+        saveInventoryToFirebase()
+        updateFooterTotals();
+        updateStatsTotalAV();
+        updateStatsAboveAV();
+        updateStatsAboveInventory();
+        updateStatsSectionTotals();
+        updateStatsAboveCustomAV();
+      });
+    });
 
     // --- Custom AV% Modal Logic ---
     document.getElementById('add-av-btn').onclick = function() {
@@ -296,16 +289,39 @@ window.customAVs.forEach(n => addCustomAVColumnAllTables(n));
 
     document.getElementById('custom-av-modal').style.display = 'none';
 
-    function loadInventoryFromLocal() {
-      const inventory = JSON.parse(localStorage.getItem('sharedInventory') || '{}');
-      document.querySelectorAll('input[type="number"][data-ore]').forEach(input => {
-        const ore = input.getAttribute('data-ore');
-        if (inventory[ore] !== undefined) {
-          input.value = inventory[ore];
-          input.dispatchEvent(new Event('input')); // Update Total AV
-        }
-      });
-    }
+    function saveInventoryToFirebase() {
+  const inventory = {};
+
+  document.querySelectorAll('input[type="number"][data-ore]').forEach(input => {
+    inventory[input.getAttribute('data-ore')] = input.value;
+  });
+
+  set(ref(db, "sharedInventory"), inventory);
+}
+
+    function loadInventoryFromFirebase() {
+
+  onValue(ref(db, "sharedInventory"), (snapshot) => {
+
+    const inventory = snapshot.val() || {};
+
+    document.querySelectorAll('input[type="number"][data-ore]').forEach(input => {
+
+      const ore = input.getAttribute('data-ore');
+
+      if (inventory[ore] !== undefined) {
+
+        input.value = inventory[ore];
+
+        input.dispatchEvent(new Event('input'));
+
+      }
+
+    });
+
+  });
+
+}
 
     function saveCustomAVsToLocal() {
       localStorage.setItem('customAVs', JSON.stringify(window.customAVs));
@@ -449,7 +465,7 @@ window.customAVs.forEach(n => addCustomAVColumnAllTables(n));
     }
 
     // After rendering and adding event listeners:
-    loadInventoryFromLocal();
+    loadInventoryFromFirebase();
     updateFooterTotals();
     updateStatsTotalAV();
     updateStatsAboveAV();
@@ -552,6 +568,7 @@ document.getElementById('reset-av-cancel').onclick = () => {
 document.getElementById('reset-av-confirm').onclick = () => {
   
   // 1. Save inventory BEFORE reset
+  saveInventoryToFirebase()
 
   // 2. Determine which sections to clear
   const boxes = document.querySelectorAll('input[data-reset-section]');
@@ -620,6 +637,7 @@ function rebindOreInputListeners() {
         }
       });
 
+      saveInventoryToFirebase()
       updateFooterTotals();
       updateStatsTotalAV();
       updateStatsAboveAV();
