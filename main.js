@@ -122,7 +122,7 @@ window.customAVs = [];
           const avId = `av-${i}-${oreIndex}`;
           html += `<tr>
             <td class="ore-name">
-              <img src="../src/${ore.replace(/ /g, "%20")}.png" alt="${ore}" class="ore-img">
+              <img src="./src/${ore.replace(/ /g, "%20")}.png" alt="${ore}" class="ore-img">
               ${ore}
             </td>
             <td><input type="number" min="0" id="${inputId}" data-ore="${ore}" data-av-id="${avId}"></td>
