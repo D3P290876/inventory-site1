@@ -1,0 +1,293 @@
+body {
+      font-family: 1, sans-serif;
+      background-color: #111;
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .section-header {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: 1px;
+      color: #8d8d8d;
+    }
+    .ore-table {
+      width: fit-content;
+      max-width: 95vw;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #23242a;
+      border-radius: 10px;
+      margin-bottom: 32px;
+      overflow: hidden;
+      border:4px solid #000;
+    }
+    .ore-table th, .ore-table td {
+      padding: 0;
+      height: 40px;
+      text-align: center;
+      border-bottom: none;
+      font-size: 1em;
+    }
+    .ore-table th {
+      background: #23242a;
+      font-weight: bold;
+      border-bottom: 2px solid #333;
+      color: #afafaf;
+      font-size: 1.05em;
+      padding: 7px 4px;
+    }
+    .ore-table td[id*="-percent-"] {
+      border: 2px solid #000000;
+      border-bottom: none;
+      border-right: none;
+      box-sizing: border-box;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .ore-table th, .ore-table td:not([id*="-percent-"]) {
+      border: none;
+} 
+    .ore-table input[type="text"],
+    .ore-table input[type="number"] {
+      width: 90px;
+      height: 35px;
+      box-sizing: border-box;
+      background: #181a20;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 4px;
+      text-align: center;
+      min-width: 0;
+      min-height: 0;
+    }
+    .ore-table .ore-name {
+      font-weight: bold;
+      color: #afafaf;
+      text-align: left;
+      padding-left: 16px;
+    }
+    .ore-img {
+      height: 24px;
+      width: 24px;
+      margin-left: 8px;
+      vertical-align: middle;
+      image-rendering: auto;
+      border-radius: 4px;
+    }
+    .ore-table input[type="number"]::-webkit-outer-spin-button,
+    .ore-table input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .ore-table input[type="number"] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    body, .ore-table th, .ore-table td {
+      white-space: nowrap;
+    }
+
+    .footer-row img{ width:25px; height:25px; }
+    
+    #stats-dropdown{
+      position:fixed;
+      left:18px; top:18px;
+      width:275px;
+      z-index:40;
+    }
+    #stats-toggle{
+      width:100%;
+      background: #1f2024;
+      border-radius:8px 8px 0 0;
+      border:none;
+      color:#fff;
+      padding:8px;
+      font-weight:800;
+      text-align:left;
+      cursor:pointer;
+      border:1px solid rgba(0,0,0,0.6);
+      border-bottom: none;
+    }
+    #stats-box{
+      background: #1f2024;
+      border-radius:0 0 8px 8px;
+      padding:10px;
+      font-size:15px;
+      color: #bdbdbd;
+      border:1px solid rgba(0,0,0,0.6);
+      border-top: none;
+    }
+
+    @media (max-width: 700px) {
+      #stats-dropdown {
+        position: static;
+        margin-bottom: 16px;
+        width: 95vw;
+        min-width: unset;
+        left: unset;
+        top: unset;
+      }
+    }
+
+    #top-btn-bar {
+      display: flex;
+      gap: 12px;
+      align-self: flex-end;
+      margin-bottom: 12px;
+      margin-right: 0;
+    }
+
+    #add-av-btn, #home-btn {
+      position: static;
+      margin: 0;
+    }
+
+    #home-btn {
+      padding: 8px 14px;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    #home-btn:hover {
+      background: #444;
+    }
+
+    #add-av-btn {
+      padding: 8px 14px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    #add-av-btn:hover {
+      background: #218838;
+    }
+
+    #reset-av-btn {
+      padding: 8px 14px;
+      background: #a72828;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    #reset-av-btn:hover {
+      background: #882121;
+    }
+
+    /* Modal styles */
+    #custom-av-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000a;
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    #custom-av-modal > div {
+      background: #23242a;
+      padding: 24px 32px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px #0008;
+      min-width: 260px;
+    }
+    #custom-av-modal div:first-child {
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    #custom-av-input {
+      width: 100px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #333;
+      background: #181a20;
+      color: #fff;
+    }
+    #custom-av-cancel, #custom-av-add {
+      padding: 6px 18px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    #custom-av-cancel {
+      margin-right: 12px;
+      background: #444;
+      color: #fff;
+    }
+    #custom-av-add {
+      background: #2196f3;
+      color: #fff;
+    }
+    #custom-av-cancel:hover {
+      background: #555;
+    }
+    #custom-av-add:hover {
+      background: #1e88e5;
+    }
+
+    /* Custom AV% column style */
+    .custom-av-percent-cell {
+      background: #181a20;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    #big-number-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+#big-number-overlay.show {
+  display: flex;
+  animation: flash 0.3s ease-in-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.overlay-content {
+  text-align: center;
+  color: #fff;
+}
+
+.overlay-content img {
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.overlay-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
