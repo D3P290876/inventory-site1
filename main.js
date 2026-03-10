@@ -7,105 +7,6 @@ import { onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-data
 
 onValue(ref(db,"inventory"), (snapshot)=>{
    const inventory = snapshot.val() || {};
-   // update inputs here
-});
-
-// Section definitions
-    const sections = [
-      {
-        name: "Limited Ores",
-        ores: [
-          "Pumpkinite", "Sinistyte M", "Sinistyte L", "Sinistyte S", "Sinistyte E",
-          "Nightmarium", "Twitchite", "Frostarium", "Giftium", "Frawstbyte",
-          "Gingerbreadium", "Peppermintium", "Noobite"
-        ]
-      },
-      {
-        name: "Special Ores",
-        ores: [
-          "Garnet", "Moonstone", "Kappa", "Tungsten", "Titanium", "Element V",
-          "Havium", "Valhalum", "Nihilium", "Ambrosia"
-        ]
-      },
-      {
-        name: "Market Ores",
-        ores: [
-          "Stone", "Coal", "Iron", "Gold", "Copper", "Silver", "Topaz", "Sulfur",
-          "Ruby", "Sapphire", "Emerald", "Diamond", "Opal", "Boomite", "Uranium", "Serendibite"
-        ]
-      },
-      {
-        name: "Scary Caverns - 600m",
-        ores: [
-          "Amethyst", "Platinum", "Shadow Metal", "Illuminunium"
-        ]
-      },
-      {
-        name: "Azure Caverns - 1000m",
-        ores: [
-          "Plutonium", "Baryte", "Rainbonite", "Orichalcum", "Alexandrite", "Azure", "Mithril"
-        ]
-      },
-      {
-        name: "Underworld - 2000m",
-        ores: [
-          "Nullstone", "Dragonglass", "Painite", "Soulstone", "Firecrystal", "Symmetrium"
-        ]
-      },
-      {
-        name: "Radioactive Zone - 3000m",
-        ores: [
-          "Dragonstone", "Promethium", "Newtonium", "Corium", "Yunium", "Solarium"
-        ]
-      },
-      {
-        name: "Dreamscape / Abyss - 4000m+",
-        ores: [
-          "Frightstone", "Redmatter", "Darkmatter", "Antimatter", "Stellarite", "Constellatium", "Mightstone"
-        ]
-      }
-    ];
-window.customAVs = [];
-    // Helper to get AV from oreValues, fallback to blank if not found
-    function getAV(ore) {
-      return (window.oreValues && ore in oreValues) ? window.oreValues[ore].AV : "";
-    }
-
-    function getAVPercent(ore, avCount) {
-      const oreAV = window.oreValues && window.oreValues[ore] ? window.oreValues[ore].AV : null;
-      if (!oreAV) return "0.00%";
-      const percent = (avCount / oreAV) * 100;
-      return percent.toFixed(2) + "%";
-    }
-
-    function getAVPercentValue(inventory, oreAV, n) {
-      if (!oreAV || !inventory) return "0.00%";
-      const percent = (inventory / (oreAV * n)) * 100;
-      return Math.min(percent, 100).toFixed(2) + "%";
-    }
-
-    // Map percent (0-100) to a color
-    function percentToColor(percent) {
-      if (percent >= 100) {
-        // 100% or more: blue
-        return "#4a86e8";
-      }
-      // 0% (red) → 50% (yellow) → 100% (green)
-      // 0-50% red→yellow, 50-100% yellow→green
-      let r, g, b = 0;
-      if (percent < 50) {
-        // Red to Yellow
-        r = 255;
-        g = Math.round(255 * (percent / 50));
-      } else {
-        // Yellow to Green
-        r = Math.round(255 * (1 - (percent - 50) / 50));
-        g = 255;
-      }
-      // Convert to hex
-      return `rgb(${r},${g},${b})`;
-    }
-
     // Render each section as a table with a header
     function renderSections(sections) {
       let html = "";
@@ -210,6 +111,104 @@ window.customAVs = [];
         updateStatsAboveCustomAV();
       });
     });
+});
+
+// Section definitions
+    const sections = [
+      {
+        name: "Limited Ores",
+        ores: [
+          "Pumpkinite", "Sinistyte M", "Sinistyte L", "Sinistyte S", "Sinistyte E",
+          "Nightmarium", "Twitchite", "Frostarium", "Giftium", "Frawstbyte",
+          "Gingerbreadium", "Peppermintium", "Noobite"
+        ]
+      },
+      {
+        name: "Special Ores",
+        ores: [
+          "Garnet", "Moonstone", "Kappa", "Tungsten", "Titanium", "Element V",
+          "Havium", "Valhalum", "Nihilium", "Ambrosia"
+        ]
+      },
+      {
+        name: "Market Ores",
+        ores: [
+          "Stone", "Coal", "Iron", "Gold", "Copper", "Silver", "Topaz", "Sulfur",
+          "Ruby", "Sapphire", "Emerald", "Diamond", "Opal", "Boomite", "Uranium", "Serendibite"
+        ]
+      },
+      {
+        name: "Scary Caverns - 600m",
+        ores: [
+          "Amethyst", "Platinum", "Shadow Metal", "Illuminunium"
+        ]
+      },
+      {
+        name: "Azure Caverns - 1000m",
+        ores: [
+          "Plutonium", "Baryte", "Rainbonite", "Orichalcum", "Alexandrite", "Azure", "Mithril"
+        ]
+      },
+      {
+        name: "Underworld - 2000m",
+        ores: [
+          "Nullstone", "Dragonglass", "Painite", "Soulstone", "Firecrystal", "Symmetrium"
+        ]
+      },
+      {
+        name: "Radioactive Zone - 3000m",
+        ores: [
+          "Dragonstone", "Promethium", "Newtonium", "Corium", "Yunium", "Solarium"
+        ]
+      },
+      {
+        name: "Dreamscape / Abyss - 4000m+",
+        ores: [
+          "Frightstone", "Redmatter", "Darkmatter", "Antimatter", "Stellarite", "Constellatium", "Mightstone"
+        ]
+      }
+    ];
+window.customAVs = [];
+    // Helper to get AV from oreValues, fallback to blank if not found
+    function getAV(ore) {
+      return (window.oreValues && ore in oreValues) ? window.oreValues[ore].AV : "";
+    }
+
+    function getAVPercent(ore, avCount) {
+      const oreAV = window.oreValues && window.oreValues[ore] ? window.oreValues[ore].AV : null;
+      if (!oreAV) return "0.00%";
+      const percent = (avCount / oreAV) * 100;
+      return percent.toFixed(2) + "%";
+    }
+
+    function getAVPercentValue(inventory, oreAV, n) {
+      if (!oreAV || !inventory) return "0.00%";
+      const percent = (inventory / (oreAV * n)) * 100;
+      return Math.min(percent, 100).toFixed(2) + "%";
+    }
+
+    // Map percent (0-100) to a color
+    function percentToColor(percent) {
+      if (percent >= 100) {
+        // 100% or more: blue
+        return "#4a86e8";
+      }
+      // 0% (red) → 50% (yellow) → 100% (green)
+      // 0-50% red→yellow, 50-100% yellow→green
+      let r, g, b = 0;
+      if (percent < 50) {
+        // Red to Yellow
+        r = 255;
+        g = Math.round(255 * (percent / 50));
+      } else {
+        // Yellow to Green
+        r = Math.round(255 * (1 - (percent - 50) / 50));
+        g = 255;
+      }
+      // Convert to hex
+      return `rgb(${r},${g},${b})`;
+    }
+
 
     // --- Custom AV% Modal Logic ---
     document.getElementById('add-av-btn').onclick = function() {
